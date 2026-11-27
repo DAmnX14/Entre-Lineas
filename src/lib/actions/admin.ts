@@ -6,6 +6,7 @@ import crypto from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "../auth";
+import { PDFS_DIR, UPLOADS_DIR } from "../paths";
 import { slugify } from "../format";
 import { textToSections } from "../sections-text";
 import { confirmPayment } from "../payments";
@@ -39,7 +40,7 @@ const int = (f: FormData, k: string) => {
 async function storeUpload(file: File, dir: "covers" | "pdfs") {
   const ext = path.extname(file.name).toLowerCase();
   const name = `${crypto.randomBytes(8).toString("hex")}${ext}`;
-  const base = dir === "covers" ? path.join(process.cwd(), "public", "uploads") : path.join(process.cwd(), "storage", "pdfs");
+  const base = dir === "covers" ? UPLOADS_DIR : PDFS_DIR;
   await fs.mkdir(base, { recursive: true });
   await fs.writeFile(path.join(base, name), Buffer.from(await file.arrayBuffer()));
   return dir === "covers" ? `/uploads/${name}` : name;

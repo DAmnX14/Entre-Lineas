@@ -3,6 +3,7 @@ import path from "node:path";
 import { getBookById, getDownload, getOrder, isDownloadValid, registerDownload } from "@/lib/repo";
 import { renderBookPdf } from "@/lib/pdf";
 import { slugify } from "@/lib/format";
+import { PDFS_DIR } from "@/lib/paths";
 
 export async function GET(req: Request, ctx: RouteContext<"/api/descargas/[token]">) {
   const { token } = await ctx.params;
@@ -17,7 +18,7 @@ export async function GET(req: Request, ctx: RouteContext<"/api/descargas/[token
   const size = new URL(req.url).searchParams.get("tamano") === "editorial" ? "editorial" : "a4";
   let bytes: Uint8Array;
   if (book.pdfFile) {
-    bytes = await fs.readFile(path.join(process.cwd(), "storage", "pdfs", path.basename(book.pdfFile)));
+    bytes = await fs.readFile(path.join(PDFS_DIR, path.basename(book.pdfFile)));
   } else {
     const item = order.items.find((i) => i.bookId === book.id && i.format === "pdf") ?? order.items.find((i) => i.format === "pdf");
     bytes = await renderBookPdf(book, { size, personalization: item?.personalization });

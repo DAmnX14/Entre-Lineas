@@ -26,9 +26,19 @@ npm run dev
 
 **Panel**: resumen con ventas por día (físico y PDF por separado), más vendidos, stock bajo y pedidos por despachar; pedidos con estados y seguimiento; ABM de libros (portada, PDF, precios, precio promocional, stock, estructura editable); packs; cupones; clientes; opiniones; mensajes, suscriptores y correos generados; reportes CSV.
 
+## Publicar en Railway
+
+1. En railway.com: **New Project → Deploy from GitHub repo** y elegí este repositorio.
+2. En el servicio, **Variables**: cargá las de `.env.example` y además `DATA_DIR=/data`. `NEXT_PUBLIC_SITE_URL` es la dirección pública con `https://`.
+3. Agregá un **Volume** al servicio con el punto de montaje `/data`. Ahí viven la base de datos, las portadas y los PDF subidos: sin volumen se borran en cada publicación.
+4. **Settings → Networking → Generate Domain** (o conectá tu dominio).
+5. En Mercado Pago, configurá el webhook `https://tu-dominio/api/pagos/mercadopago` y cargá `MP_WEBHOOK_SECRET`.
+
+Cada `git push` a `main` vuelve a publicar la tienda.
+
 ## Antes de publicar
 
-1. **Base de datos y archivos.** SQLite y la carpeta `storage/` sirven para un servidor propio (VPS, Railway, Render con disco). En Vercel u otro hosting sin disco persistente hay que migrar a PostgreSQL (todo el SQL está en `src/lib/db.ts` y `src/lib/repo.ts`) y guardar portadas y PDF en un almacenamiento de archivos (por ejemplo, Vercel Blob privado).
+1. **Base de datos y archivos.** La base (SQLite), las portadas y los PDF subidos se guardan en `DATA_DIR`, que tiene que estar en un disco persistente (volumen de Railway, Render o un VPS). En Vercel u otro hosting sin disco persistente hay que migrar a PostgreSQL (todo el SQL está en `src/lib/db.ts` y `src/lib/repo.ts`) y guardar portadas y PDF en un almacenamiento de archivos.
 2. **Correo.** Los correos (confirmación, descargas, envíos) se guardan en la tabla `outbox` y se ven en el panel. Para enviarlos hay que conectar un proveedor (Resend, Postmark, etc.) en `queueEmail` de `src/lib/repo.ts`.
 3. **Fotografías.** El sitio usa tapas e ilustraciones generadas. Reemplazalas por fotos reales del producto: portadas desde el panel y la polaroid del inicio en `src/components/home/Hero.tsx`.
 4. **Opiniones.** La sección de opiniones muestra solo testimonios reales aprobados en el panel. No hay reseñas inventadas.

@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import bcrypt from "bcryptjs";
 import { SEED_BOOKS, SEED_PACKS } from "./content/catalog";
+import { DATA_DIR } from "./paths";
 
 /**
  * Capa de datos sobre SQLite (node:sqlite).
@@ -11,7 +12,6 @@ import { SEED_BOOKS, SEED_PACKS } from "./content/catalog";
  * PostgreSQL (Neon, Supabase) solo requiera reemplazar estos dos archivos.
  */
 
-const DATA_DIR = process.env.DATA_DIR ?? path.join(process.cwd(), "data");
 const DB_FILE = path.join(DATA_DIR, "tienda.db");
 
 const SCHEMA = `
