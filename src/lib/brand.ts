@@ -1,3 +1,20 @@
+/**
+ * Normaliza la dirección pública del sitio. Tolera errores comunes al cargarla
+ * (incluir el nombre de la variable, faltar https:// o sobrar la barra final)
+ * para que un valor mal escrito no impida publicar la tienda.
+ */
+function cleanSiteUrl(raw: string | undefined) {
+  let v = (raw ?? "").trim().replace(/^NEXT_PUBLIC_SITE_URL\s*=\s*/i, "").replace(/^["']|["']$/g, "");
+  if (!v) return "http://localhost:3000";
+  if (!/^https?:\/\//i.test(v)) v = `https://${v}`;
+  try {
+    return new URL(v).origin;
+  } catch {
+    console.warn(`[tienda] NEXT_PUBLIC_SITE_URL no es una dirección válida: ${raw}`);
+    return "http://localhost:3000";
+  }
+}
+
 /** Datos de la marca y de la tienda. Cambiá aquí el nombre, los contactos y las reglas comerciales. */
 export const BRAND = {
   name: "Entre Líneas",
@@ -13,7 +30,7 @@ export const BRAND = {
     facebook: "https://www.facebook.com/",
     pinterest: "https://www.pinterest.com/",
   },
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+  siteUrl: cleanSiteUrl(process.env.NEXT_PUBLIC_SITE_URL),
 };
 
 export const LOGO = {

@@ -35,7 +35,7 @@ export function paymentMethods() {
 }
 
 function baseUrl() {
-  return (process.env.NEXT_PUBLIC_SITE_URL ?? BRAND.siteUrl).replace(/\/$/, "");
+  return BRAND.siteUrl;
 }
 
 export function orderUrl(order: Pick<Order, "number" | "publicToken">) {
