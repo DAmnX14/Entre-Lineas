@@ -20,7 +20,7 @@ export function LineItem({ line, compact = false }: { line: QuotedLine; compact?
       <Link href={href} className="relative w-16 shrink-0 sm:w-20">
         {line.covers.slice(0, 3).map((c, i) => (
           <div key={i} className={i === 0 ? "relative" : "absolute inset-0"} style={i ? { transform: `translate(${i * 7}px, ${-i * 5}px)`, zIndex: -i } : undefined}>
-            <BookCover title={c.title} category={c.category} image={c.image} size="sm" />
+            <BookCover title={c.title} category={c.category} image={c.image} size="xs" />
           </div>
         ))}
       </Link>

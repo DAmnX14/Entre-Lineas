@@ -44,6 +44,9 @@ export function orderUrl(order: Pick<Order, "number" | "publicToken">) {
 
 export async function createMercadoPagoPreference(order: Order): Promise<{ id: string; initPoint: string }> {
   const url = orderUrl(order);
+  // Mercado Pago no acepta direcciones locales (http://localhost) para el
+  // regreso automático ni para las notificaciones: solo se envían con https.
+  const isPublic = baseUrl().startsWith("https://");
   const res = await fetch(`${MP_API}/checkout/preferences`, {
     method: "POST",
     headers: {
@@ -65,8 +68,7 @@ export async function createMercadoPagoPreference(order: Order): Promise<{ id: s
       payer: { email: order.email, name: order.name },
       external_reference: order.number,
       back_urls: { success: url, pending: url, failure: url },
-      auto_return: "approved",
-      notification_url: `${baseUrl()}/api/pagos/mercadopago`,
+      ...(isPublic ? { auto_return: "approved", notification_url: `${baseUrl()}/api/pagos/mercadopago` } : {}),
       statement_descriptor: BRAND.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().slice(0, 22),
     }),
   });

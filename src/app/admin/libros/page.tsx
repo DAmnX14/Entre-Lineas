@@ -27,7 +27,7 @@ export default async function BooksAdmin({ searchParams }: { searchParams: Promi
               <tr key={b.id} className={b.active ? "" : "opacity-55"}>
                 <td className="px-4 py-2">
                   <Link href={`/admin/libros/${b.id}`} className="flex items-center gap-3">
-                    <span className="w-8 shrink-0"><BookCover title={b.title} category={b.category} image={b.coverImage} size="sm" /></span>
+                    <span className="w-8 shrink-0"><BookCover title={b.title} category={b.category} image={b.coverImage} size="xs" /></span>
                     <span className="link font-semibold">{b.title}</span>
                   </Link>
                 </td>

@@ -131,8 +131,13 @@ export async function POST(req: Request) {
       setOrderPreference(order.id, pref.id);
       return NextResponse.json({ redirect: pref.initPoint, order: order.number });
     } catch (e) {
-      console.error(e);
-      return NextResponse.json({ redirect: next, order: order.number, warning: "mp" });
+      console.error("[mercadopago] No se pudo crear el pago:", e);
+      return NextResponse.json(
+        {
+          error: `Creamos tu pedido ${order.number}, pero Mercado Pago no respondió. Intentá de nuevo en unos minutos o elegí transferencia bancaria.`,
+        },
+        { status: 502 },
+      );
     }
   }
   return NextResponse.json({ redirect: next, order: order.number });

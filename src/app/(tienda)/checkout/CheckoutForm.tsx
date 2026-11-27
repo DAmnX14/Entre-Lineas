@@ -304,7 +304,7 @@ export function CheckoutForm({
           {quote?.lines.map((l) => (
             <li key={l.id} className="flex gap-3 py-3">
               <div className="w-11 shrink-0">
-                <BookCover title={l.covers[0]?.title ?? l.title} category={l.covers[0]?.category ?? "personales"} image={l.covers[0]?.image} size="sm" />
+                <BookCover title={l.covers[0]?.title ?? l.title} category={l.covers[0]?.category ?? "personales"} image={l.covers[0]?.image} size="xs" />
               </div>
               <div className="min-w-0 flex-1 text-sm">
                 <p className="font-semibold leading-snug">{l.title}</p>
