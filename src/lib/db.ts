@@ -224,11 +224,20 @@ function ensureAdmin(db: DatabaseSync) {
   );
 }
 
+/** Cambios de esquema sobre bases ya creadas. */
+function migrate(db: DatabaseSync) {
+  const cols = (db.prepare("PRAGMA table_info(outbox)").all() as { name: string }[]).map((c) => c.name);
+  if (!cols.includes("status")) db.exec("ALTER TABLE outbox ADD COLUMN status TEXT NOT NULL DEFAULT 'pendiente'");
+  if (!cols.includes("error")) db.exec("ALTER TABLE outbox ADD COLUMN error TEXT");
+  if (!cols.includes("sent_at")) db.exec("ALTER TABLE outbox ADD COLUMN sent_at TEXT");
+}
+
 function open(): DatabaseSync {
   fs.mkdirSync(DATA_DIR, { recursive: true });
   const db = new DatabaseSync(DB_FILE);
   db.exec("PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON; PRAGMA busy_timeout = 5000;");
   db.exec(SCHEMA);
+  migrate(db);
   seed(db);
   ensureAdmin(db);
   return db;

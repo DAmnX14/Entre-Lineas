@@ -2,10 +2,10 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import bcrypt from "bcryptjs";
 import { quoteCart } from "@/lib/pricing";
-import { COMMERCE } from "@/lib/brand";
+import { BRAND, COMMERCE } from "@/lib/brand";
 import { currentUser, createSession } from "@/lib/auth";
 import { createOrder, createUser, getBook, getPack, getUserByEmail, queueEmail, setOrderPreference } from "@/lib/repo";
-import { createMercadoPagoPreference, mercadoPagoEnabled, orderUrl, testPaymentsEnabled } from "@/lib/payments";
+import { createMercadoPagoPreference, mercadoPagoEnabled, notifyStore, orderUrl, testPaymentsEnabled } from "@/lib/payments";
 import { money } from "@/lib/format";
 import type { CartLine } from "@/lib/cart-types";
 
@@ -123,6 +123,13 @@ export async function POST(req: Request) {
       `Seguimiento: ${orderUrl(order)}`,
     ].join("\n\n"),
   );
+
+  if (d.paymentMethod === "transferencia") {
+    notifyStore(
+      `Pedido por transferencia: ${order.number} · ${money(order.total)}`,
+      `${order.name} (${order.email}, ${order.phone}) eligió transferencia. Cuando llegue el comprobante, marcalo como pagado:\n${BRAND.siteUrl}/admin/pedidos/${order.id}`,
+    );
+  }
 
   const next = `/pedido/${order.number}?t=${order.publicToken}`;
   if (d.paymentMethod === "mercadopago") {

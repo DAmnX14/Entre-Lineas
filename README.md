@@ -39,7 +39,7 @@ Cada `git push` a `main` vuelve a publicar la tienda.
 ## Antes de publicar
 
 1. **Base de datos y archivos.** La base (SQLite), las portadas y los PDF subidos se guardan en `DATA_DIR`, que tiene que estar en un disco persistente (volumen de Railway, Render o un VPS). En Vercel u otro hosting sin disco persistente hay que migrar a PostgreSQL (todo el SQL está en `src/lib/db.ts` y `src/lib/repo.ts`) y guardar portadas y PDF en un almacenamiento de archivos.
-2. **Correo.** Los correos (confirmación, descargas, envíos) se guardan en la tabla `outbox` y se ven en el panel. Para enviarlos hay que conectar un proveedor (Resend, Postmark, etc.) en `queueEmail` de `src/lib/repo.ts`.
+2. **Correo.** Los correos (confirmación, pago, descargas, envíos y avisos de ventas) se envían por SMTP con las variables `SMTP_*` y `MAIL_FROM`. Sirve Gmail con una contraseña de aplicación o un proveedor como Resend o Brevo. En el panel, **Mensajes y correos** muestra el estado de cada envío, permite reintentar y mandar un correo de prueba.
 3. **Fotografías.** El sitio usa tapas e ilustraciones generadas. Reemplazalas por fotos reales del producto: portadas desde el panel y la polaroid del inicio en `src/components/home/Hero.tsx`.
 4. **Opiniones.** La sección de opiniones muestra solo testimonios reales aprobados en el panel. No hay reseñas inventadas.
 5. **Datos comerciales.** CBU, alias, WhatsApp, redes, tarifas de envío (`src/lib/pricing.ts`) y precios.

@@ -717,18 +717,40 @@ export function listMessages() {
   }[];
 }
 
+/**
+ * Guarda el correo en la bandeja de salida y lo envía en segundo plano.
+ * Si el envío falla, queda registrado con su error para reintentarlo desde el panel.
+ */
 export function queueEmail(to: string, subject: string, body: string) {
-  db().prepare("INSERT INTO outbox (to_email,subject,body) VALUES (?,?,?)").run(to, subject, body);
+  const r = db().prepare("INSERT INTO outbox (to_email,subject,body) VALUES (?,?,?)").run(to, subject, body);
+  const id = Number(r.lastInsertRowid);
+  void import("./mailer").then((m) => m.deliverOutbox(id)).catch((e) => console.error("[correo]", e));
+  return id;
+}
+
+export type OutboxEmail = {
+  id: number;
+  to_email: string;
+  subject: string;
+  body: string;
+  created_at: string;
+  status: "pendiente" | "enviado" | "error" | "sin_configurar";
+  error: string | null;
+  sent_at: string | null;
+};
+
+export function getOutboxEmail(id: number) {
+  return db().prepare("SELECT * FROM outbox WHERE id=?").get(id) as OutboxEmail | undefined;
+}
+
+export function setOutboxStatus(id: number, status: OutboxEmail["status"], error: string | null = null) {
+  db()
+    .prepare("UPDATE outbox SET status=?, error=?, sent_at=CASE WHEN ?='enviado' THEN datetime('now') ELSE sent_at END WHERE id=?")
+    .run(status, error, status, id);
 }
 
 export function listOutbox() {
-  return db().prepare("SELECT * FROM outbox ORDER BY id DESC LIMIT 100").all() as {
-    id: number;
-    to_email: string;
-    subject: string;
-    body: string;
-    created_at: string;
-  }[];
+  return db().prepare("SELECT * FROM outbox ORDER BY id DESC LIMIT 100").all() as OutboxEmail[];
 }
 
 /* ------------------------------------------------------------ Testimonios */

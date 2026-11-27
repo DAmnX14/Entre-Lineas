@@ -249,3 +249,28 @@ export async function testimonialAction(f: FormData) {
   if (op === "add" && str(f, "name") && str(f, "text")) addTestimonial(str(f, "name"), str(f, "text"), str(f, "book") || null, true);
   revalidatePath("/", "layout");
 }
+
+/* -------------------------------------------------------------- Correos */
+
+export async function retryEmailAction(f: FormData) {
+  await requireAdmin();
+  const { deliverOutbox } = await import("../mailer");
+  const { setOutboxStatus } = await import("../repo");
+  const id = Number(f.get("id"));
+  setOutboxStatus(id, "pendiente");
+  await deliverOutbox(id);
+  revalidatePath("/admin/mensajes");
+}
+
+export async function testEmailAction(_: AdminState, f: FormData): Promise<AdminState> {
+  const admin = await requireAdmin();
+  const { mailConfigured, sendEmail } = await import("../mailer");
+  if (!mailConfigured()) return { error: "Falta configurar SMTP_HOST, SMTP_USER y SMTP_PASS en las variables del servidor." };
+  const to = str(f, "to") || admin.email;
+  try {
+    await sendEmail(to, "Correo de prueba de tu tienda", "¡Hola! Si estás leyendo esto, los correos de la tienda funcionan.\n\nAsí van a ver tus clientes las confirmaciones de compra.");
+    return { ok: `Enviamos un correo de prueba a ${to}. Revisá también la carpeta de spam.` };
+  } catch (e) {
+    return { error: `No se pudo enviar: ${e instanceof Error ? e.message : String(e)}` };
+  }
+}

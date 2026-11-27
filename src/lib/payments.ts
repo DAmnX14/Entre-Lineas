@@ -111,6 +111,12 @@ export async function syncMercadoPagoPayment(paymentId: string) {
   return order.number;
 }
 
+/** Aviso interno para la tienda (STORE_NOTIFY_EMAIL o, si no está, ADMIN_EMAIL). */
+export function notifyStore(subject: string, body: string) {
+  const to = process.env.STORE_NOTIFY_EMAIL || process.env.ADMIN_EMAIL;
+  if (to) queueEmail(to, subject, body);
+}
+
 /** Marca el pedido como pagado y deja los correos de confirmación en la bandeja de salida. */
 export function confirmPayment(orderId: number, paymentId?: string) {
   const changed = markOrderPaid(orderId, paymentId);
@@ -130,4 +136,13 @@ export function confirmPayment(orderId: number, paymentId?: string) {
   if (order.items.some((i) => i.format === "fisico")) lines.push("", "Te avisamos por este medio cuando despachemos tu libro.");
   lines.push("", `Podés ver tu pedido en ${orderUrl(order)}`);
   queueEmail(order.email, `Recibimos tu pago · Pedido ${order.number}`, lines.join("\n"));
+  notifyStore(
+    `Nueva venta: ${order.number} · ${money(order.total)}`,
+    [
+      `${order.name} (${order.email}${order.phone ? `, ${order.phone}` : ""}) pagó el pedido ${order.number}.`,
+      ...order.items.map((i) => `· ${i.qty} × ${i.title} (${i.format === "pdf" ? "PDF" : "físico"})${i.personalization?.giftWrap ? " · con packaging" : ""}`),
+      order.items.some((i) => i.format === "fisico") ? "Hay libros físicos para preparar y despachar." : "Solo PDF: las descargas ya están disponibles para el cliente.",
+      `${baseUrl()}/admin/pedidos/${order.id}`,
+    ].join("\n"),
+  );
 }
