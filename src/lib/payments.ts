@@ -81,7 +81,9 @@ export async function createMercadoPagoPreference(order: Order): Promise<{ id: s
 export function verifyMercadoPagoSignature(headers: Headers, dataId: string) {
   const secret = process.env.MP_WEBHOOK_SECRET;
   if (!secret) return true;
-  const sig = headers.get("x-signature") ?? "";
+  const sig = headers.get("x-signature");
+  // Sin firma (avisos IPN antiguos) se acepta igual: el pago siempre se vuelve a consultar en la API.
+  if (!sig) return true;
   const requestId = headers.get("x-request-id") ?? "";
   const parts = Object.fromEntries(sig.split(",").map((p) => p.trim().split("=") as [string, string]));
   if (!parts.ts || !parts.v1) return false;
@@ -98,6 +100,8 @@ export async function syncMercadoPagoPayment(paymentId: string) {
     headers: { Authorization: `Bearer ${process.env.MP_ACCESS_TOKEN}` },
     cache: "no-store",
   });
+  // 404: el pago no existe en esta cuenta (por ejemplo, la notificación simulada del panel).
+  if (res.status === 404) return null;
   if (!res.ok) throw new Error(`No se pudo consultar el pago ${paymentId}: ${res.status}`);
   const p = (await res.json()) as { status: string; external_reference: string; transaction_amount: number };
   const order = getOrderByNumber(p.external_reference);

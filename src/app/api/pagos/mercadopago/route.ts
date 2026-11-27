@@ -7,7 +7,8 @@ export async function POST(req: Request) {
   const url = new URL(req.url);
   const body = (await req.json().catch(() => ({}))) as { type?: string; action?: string; data?: { id?: string | number } };
   const type = body.type ?? url.searchParams.get("type") ?? url.searchParams.get("topic");
-  const id = String(body.data?.id ?? url.searchParams.get("data.id") ?? url.searchParams.get("id") ?? "");
+  // Mercado Pago firma usando el data.id de la URL; si no viene, se usa el del cuerpo.
+  const id = String(url.searchParams.get("data.id") ?? body.data?.id ?? url.searchParams.get("id") ?? "");
   if (type !== "payment" || !id) return NextResponse.json({ ok: true, ignored: true });
   if (!verifyMercadoPagoSignature(req.headers, id)) return NextResponse.json({ error: "Firma inválida" }, { status: 401 });
   try {
