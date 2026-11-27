@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { requireAdmin } from "@/lib/auth";
 import { logout } from "@/lib/actions/auth";
-import { BRAND } from "@/lib/brand";
+import { BRAND, LOGO } from "@/lib/brand";
 import { db } from "@/lib/db";
 import { AdminNav } from "./AdminNav";
 
@@ -16,7 +16,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     <div className="min-h-screen bg-cream lg:grid lg:grid-cols-[15rem_1fr]">
       <aside className="border-b border-line bg-paper px-4 py-4 lg:sticky lg:top-0 lg:h-screen lg:border-r lg:border-b-0 lg:py-6">
         <div className="mb-4 flex items-center justify-between lg:mb-8 lg:block">
-          <Link href="/admin" className="serif text-2xl">{BRAND.name}</Link>
+          <Link href="/admin" aria-label={`${BRAND.name}, panel`}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={LOGO.text} alt={BRAND.name} width={900} height={134} className="h-6 w-auto" />
+          </Link>
           <p className="text-xs text-ink-soft lg:mt-1">Panel de administración</p>
         </div>
         <AdminNav pending={pending} />

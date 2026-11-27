@@ -18,6 +18,6 @@ export const useFavorites = create<FavState>()(
       },
       merge: (slugs) => set({ slugs: [...new Set([...get().slugs, ...slugs])] }),
     }),
-    { name: "pyl-favs" },
+    { name: "el-favs" },
   ),
 );

@@ -67,7 +67,7 @@ export async function createMercadoPagoPreference(order: Order): Promise<{ id: s
       back_urls: { success: url, pending: url, failure: url },
       auto_return: "approved",
       notification_url: `${baseUrl()}/api/pagos/mercadopago`,
-      statement_descriptor: BRAND.name.toUpperCase().slice(0, 22),
+      statement_descriptor: BRAND.name.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().slice(0, 22),
     }),
   });
   if (!res.ok) throw new Error(`Mercado Pago respondió ${res.status}: ${await res.text()}`);

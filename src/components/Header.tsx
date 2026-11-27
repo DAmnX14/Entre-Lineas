@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { useHydrated } from "./useHydrated";
-import { BRAND } from "@/lib/brand";
+import { BRAND, LOGO } from "@/lib/brand";
 import { useCart, useCartCount } from "./cart/store";
 import { IconBag, IconClose, IconMenu, IconSearch, IconUser } from "./Icons";
 
@@ -39,8 +39,9 @@ export function Header({ user }: { user: { name: string; role: string } | null }
         <button className="-ml-2 p-2 lg:hidden" onClick={() => setMenu(true)} aria-label="Abrir menú">
           <IconMenu />
         </button>
-        <Link href="/" className="serif text-[1.45rem] leading-none tracking-tight sm:text-[1.6rem]">
-          {BRAND.name}
+        <Link href="/" className="shrink-0" aria-label={`${BRAND.name}, inicio`}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={LOGO.text} alt={BRAND.name} width={900} height={134} className="h-[1.35rem] w-auto sm:h-[1.6rem]" />
         </Link>
         <nav className="ml-8 hidden items-center gap-7 text-sm lg:flex" aria-label="Principal">
           {NAV.map((n) => (
@@ -102,7 +103,8 @@ export function Header({ user }: { user: { name: string; role: string } | null }
           <div className="absolute inset-0 bg-ink/40" onClick={() => setMenu(false)} />
           <div className="absolute inset-y-0 left-0 flex w-[84%] max-w-sm flex-col bg-cream px-6 py-5">
             <div className="flex items-center justify-between">
-              <span className="serif text-2xl">{BRAND.name}</span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={LOGO.text} alt={BRAND.name} width={900} height={134} className="h-6 w-auto" />
               <button className="p-2" onClick={() => setMenu(false)} aria-label="Cerrar menú">
                 <IconClose />
               </button>

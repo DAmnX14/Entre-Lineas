@@ -1,8 +1,8 @@
-# Puño y Letra — tienda de libros de recuerdos
+# Entre Líneas — libros para guardar historias
 
 Tienda online de libros para completar con recuerdos (para mamá, papá, abuelos, hermanos, parejas, hijos, amigos y para uno mismo), en formato físico y PDF.
 
-> «Puño y Letra» es un nombre provisorio. Se cambia en `src/lib/brand.ts` junto con contactos, redes y reglas comerciales.
+> El nombre, el logo (`public/brand/`), los contactos, las redes y las reglas comerciales se configuran en `src/lib/brand.ts`.
 
 ## Cómo correrla
 
@@ -13,7 +13,7 @@ npm run dev
 ```
 
 - Tienda: http://localhost:3000
-- Panel: http://localhost:3000/admin (usuario de `ADMIN_EMAIL` / `ADMIN_PASSWORD`; sin variables se crea `admin@punoyletra.local` con la clave `cambiar-esta-clave`, solo para desarrollo).
+- Panel: http://localhost:3000/admin (usuario de `ADMIN_EMAIL` / `ADMIN_PASSWORD`; sin variables se crea `admin@entrelineas.local` con la clave `cambiar-esta-clave`, solo para desarrollo).
 - La base de datos (SQLite) se crea y se carga sola la primera vez en `data/tienda.db`, con 46 libros, 10 packs y 2 cupones (`BIENVENIDA10`, `ENVIOGRATIS`).
 
 ## Qué incluye

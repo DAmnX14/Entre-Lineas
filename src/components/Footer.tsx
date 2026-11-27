@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BRAND } from "@/lib/brand";
+import { BRAND, LOGO } from "@/lib/brand";
 import { CATEGORIES } from "@/lib/content/taxonomy";
 
 export function Footer() {
@@ -7,7 +7,8 @@ export function Footer() {
     <footer className="mt-auto bg-ink text-cream/85">
       <div className="mx-auto grid max-w-7xl gap-10 px-4 py-14 sm:px-6 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div>
-          <p className="serif text-3xl text-cream">{BRAND.name}</p>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={LOGO.light} alt={`${BRAND.name}: ${BRAND.tagline}`} width={1000} height={487} className="w-full max-w-[17rem]" />
           <p className="mt-3 max-w-xs text-sm leading-relaxed text-cream/70">{BRAND.description}</p>
           <div className="mt-6 flex gap-4 text-sm">
             <a href={BRAND.social.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-white">Instagram</a>

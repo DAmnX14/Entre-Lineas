@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import { SignJWT, jwtVerify } from "jose";
 import { getUser, type User } from "./repo";
 
-const COOKIE = "pyl_session";
+const COOKIE = "el_session";
 const MAX_AGE = 60 * 60 * 24 * 30;
 
 function secret() {

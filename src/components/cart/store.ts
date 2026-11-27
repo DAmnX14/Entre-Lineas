@@ -59,7 +59,7 @@ export const useCart = create<CartState>()(
       setCoupon: (coupon) => set({ coupon }),
       setOpen: (open) => set({ open }),
     }),
-    { name: "pyl-cart", partialize: (s) => ({ lines: s.lines, coupon: s.coupon }) },
+    { name: "el-cart", partialize: (s) => ({ lines: s.lines, coupon: s.coupon }) },
   ),
 );
 

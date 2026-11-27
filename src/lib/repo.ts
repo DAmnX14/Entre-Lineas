@@ -558,7 +558,7 @@ export function createOrder(o: NewOrder): Order {
         o.notes,
       );
     const id = Number(r.lastInsertRowid);
-    db().prepare("UPDATE orders SET number=? WHERE id=?").run(`PYL-${String(1000 + id).padStart(6, "0")}`, id);
+    db().prepare("UPDATE orders SET number=? WHERE id=?").run(`EL-${String(1000 + id).padStart(6, "0")}`, id);
     const ins = db().prepare(
       "INSERT INTO order_items (order_id,kind,book_id,pack_id,title,format,qty,unit_price,total,personalization,pack_books) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
     );

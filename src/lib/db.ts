@@ -207,7 +207,7 @@ function seed(db: DatabaseSync) {
 }
 
 function ensureAdmin(db: DatabaseSync) {
-  const email = (process.env.ADMIN_EMAIL ?? "admin@punoyletra.local").toLowerCase();
+  const email = (process.env.ADMIN_EMAIL ?? "admin@entrelineas.local").toLowerCase();
   const existing = db.prepare("SELECT id FROM users WHERE email = ?").get(email);
   if (existing) return;
   const password = process.env.ADMIN_PASSWORD ?? "cambiar-esta-clave";
